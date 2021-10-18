@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{group.description}}{% endblock %}
+{% block header %}{{group.description}}{% endblock %}
+{% block content %}
+	<p>{{group.title}}</p>
+		{% for el in page%}
+			<p>
+				<ul>
+					<li>Автор: {{el.author}}</li>
+					<li>Дата публикации: {{el.pub_date|date:"d M Y" }}</li>
+				</ul>
+				<br>
+				{{el.text}}
+				
+			</p>
+			<hr>
+		{%endfor%}
+	{% include "paginator.html" %}
+{% endblock %}

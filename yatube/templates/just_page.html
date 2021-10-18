@@ -1,0 +1,19 @@
+<!-- templates/app_name/just_page.html -->
+<html>
+  <head>
+    <title>Простая страничка</title>
+  </head>
+
+  <body>
+    {% extends "base.html" %}
+    {% block title %}Простая страничка{% endblock %}
+    {% block header %}{{ title }}{% endblock %}
+      {% block content %}
+
+        
+        <p>{{ text }}</p>
+      {% endblock %}
+
+    {% include 'footer.html' %}
+  </body>
+</html>
