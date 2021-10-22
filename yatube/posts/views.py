@@ -26,8 +26,8 @@ class JustStaticPage(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Очень простая страница'
-        context['text'] = 'На создание этой страницы уменя \
-							ушло меньше 10 минут! Ай да я!'
+        context['text'] = f'На создание этой страницы уменя \
+                            ушло меньше 10 минут! Ай да я!'
         return context
 
 
@@ -103,7 +103,7 @@ def post_create(request):
             post.save()
             return HttpResponseRedirect(
                 f'/profile/{username}',
-                 RequestContext(request)
+                RequestContext(request)
             )
     else:
         form = PostForm()
