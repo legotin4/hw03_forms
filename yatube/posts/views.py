@@ -39,7 +39,11 @@ def group_posts(request, slug):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
-    return render(request, 'posts/group_list.html', {'page': page, 'group': group})
+    return render(
+        request, 
+        'posts/group_list.html', 
+        {'page': page, 'group': group}
+        )
 
 
 def profile(request, username):
@@ -113,19 +117,18 @@ def post_edit(request, post_id):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
+            post = Post()
             text = form.cleaned_data['text']
             if form.cleaned_data['group']:
                 group = form.cleaned_data['group']
                 objectgroup = Group.objects.filter(id=group)
-                post.group = objectgroup[0]    
+                post.group = objectgroup[0]
             username = request.user
-            post = Post()
             post.id = post_id
             post.text = text
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
             post.pub_date = datetime.now()
-            #post.image = files
             post.save()
             return HttpResponseRedirect(
                 f'/profile/{username}',
