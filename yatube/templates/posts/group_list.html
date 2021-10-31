@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{group.description}}{% endblock %}
-{% block header %}{{group.description}}{% endblock %}
+{% block header %}<h1>{{group.title}}</h1>{% endblock %}
 {% block content %}
-	<p>{{group.title}}</p>
-		{% for el in page%}
+	<p>{{group.description}}</p>
+		{% for el in page %}
 			<p>
 				<ul>
 					<li>Автор: {{el.author}}</li>

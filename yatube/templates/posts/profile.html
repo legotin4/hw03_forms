@@ -72,8 +72,12 @@
                 </h3>
                 <p>{{ p.text|linebreaksbr }}</p>
                 <small class="text-muted"><a href="{% url 'posts:post' username=p.author.username post_id=p.id %}">Перейти в пост</a></small>
-                <p>{{ p.group }} <a href="{% url 'posts:group_list' slug=p.group.slug %}">все записи группы</a></p>
+                
+                {% if p.group %}
 
+                <p>{{ p.group }} <a href="{% url 'posts:group_list' slug=p.group.slug %}">все записи группы</a></p>
+                {% endif %}
+                
                 {% if not forloop.last %}<hr>{% endif %}
                 {% endfor %}
 

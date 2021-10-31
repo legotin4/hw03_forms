@@ -17,7 +17,7 @@ def index(request):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'index.html', {'page': page})
+    return render(request, 'posts/index.html', {'page': page})
 
 
 class JustStaticPage(TemplateView):
@@ -31,23 +31,15 @@ class JustStaticPage(TemplateView):
         return context
 
 
-class Group_posts(DetailView):
+def group_posts(request, slug):
     """Возращает 10 постов указанной темы"""
-    template_name = 'posts/group_list.html'
-    model = Group
+    group = get_object_or_404(Group, slug=slug)
+    all_post = Post.objects.filter(group=group).order_by("-pub_date").all()
+    paginator = Paginator(all_post, 10)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
 
-    def get_object(self):
-        return get_object_or_404(self.model, slug=self.kwargs.get('slug'))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        all_post = Post.objects.filter(group_id=int(context['object'].id))
-        paginator = Paginator(all_post, 10)
-        page_number = self.request.GET.get('page')
-        page = paginator.get_page(page_number)
-        context['page'] = page
-        context['group'] = context['object']
-        return context
+    return render(request, 'posts/group_list.html', {'page': page, 'group': group})
 
 
 def profile(request, username):
@@ -59,7 +51,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     post_last = Post.objects.filter(author=userobject).latest('id')
-    return render(request, 'profile.html', {
+    return render(request, 'posts/profile.html', {
         'page': page,
         'count': count,
         'userobject': userobject,
@@ -75,7 +67,7 @@ def post_view(request, username, post_id):
     comments = Comment.objects.filter(post=postobject)
     form = CommentForm()
 
-    return render(request, 'post.html', {
+    return render(request, 'posts/post_detail.html', {
         'userobject': userobject,
         'postobject': postobject,
         'count': count,
@@ -90,7 +82,8 @@ def post_create(request):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             text = form.cleaned_data['text']
-            group = form.cleaned_data['group']
+            if form.cleaned_data['group']:
+                group = form.cleaned_data['group']
             username = request.user
             files = form.cleaned_data['image']
             post = Post()
@@ -121,18 +114,18 @@ def post_edit(request, post_id):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             text = form.cleaned_data['text']
-            group = form.cleaned_data['group']
+            if form.cleaned_data['group']:
+                group = form.cleaned_data['group']
+                objectgroup = Group.objects.filter(id=group)
+                post.group = objectgroup[0]    
             username = request.user
-            files = form.cleaned_data['image']
             post = Post()
             post.id = post_id
             post.text = text
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
-            objectgroup = Group.objects.filter(id=group)
-            post.group = objectgroup[0]
             post.pub_date = datetime.now()
-            post.image = files
+            #post.image = files
             post.save()
             return HttpResponseRedirect(
                 f'/profile/{username}',
@@ -143,7 +136,8 @@ def post_edit(request, post_id):
 
     return render(request, 'posts/post_edit.html', {
         'form': form,
-        'post_id': post_id
+        'post_id': post_id,
+        'is_edit': True
     })
 
 
