@@ -3,7 +3,6 @@ from django.shortcuts import render
 from .models import Post, Group, User, Comment
 from .forms import PostForm, CommentForm
 from django.views.generic.base import TemplateView
-from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
@@ -40,10 +39,10 @@ def group_posts(request, slug):
     page = paginator.get_page(page_number)
 
     return render(
-        request, 
-        'posts/group_list.html', 
+        request,
+        'posts/group_list.html',
         {'page': page, 'group': group}
-        )
+    )
 
 
 def profile(request, username):
