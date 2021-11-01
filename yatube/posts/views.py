@@ -15,8 +15,8 @@ def index(request):
     post_list = Post.objects.order_by('-pub_date')
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    return render(request, 'posts/index.html', {'page': page})
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'posts/index.html', {'page_obj': page_obj})
 
 
 class JustStaticPage(TemplateView):
@@ -36,12 +36,12 @@ def group_posts(request, slug):
     all_post = Post.objects.filter(group=group).order_by("-pub_date").all()
     paginator = Paginator(all_post, 10)
     page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
     return render(
         request,
         'posts/group_list.html',
-        {'page': page, 'group': group}
+        {'page_obj': page_obj, 'group': group}
     )
 
 
@@ -52,10 +52,10 @@ def profile(request, username):
     count = posts.count()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
     post_last = Post.objects.filter(author=userobject).latest('id')
     return render(request, 'posts/profile.html', {
-        'page': page,
+        'page_obj': page_obj,
         'count': count,
         'userobject': userobject,
         'post_last': post_last
