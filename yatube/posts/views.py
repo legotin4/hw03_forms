@@ -112,13 +112,13 @@ def post_edit(request, post_id):
         Post,
         id=post_id,
         author__username=request.user.username
-        )
+    )
     if request.user.username != postobject.author.username:
         return redirect(
             'post',
             username=request.user.username,
             post_id=post_id
-            )
+        )
     if request.method == 'POST':
         form = PostForm(request.POST, instance=postobject)
         if form.is_valid():
