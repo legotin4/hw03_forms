@@ -6,7 +6,6 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
 
@@ -64,7 +63,6 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     """Показывает пост"""
-    
     userobject = User.objects.get(username=request.user.username)
     postobject = Post.objects.get(id=post_id)
     count = Post.objects.filter(author=userobject).count()
@@ -89,9 +87,7 @@ def post_create(request):
             if form.cleaned_data['group']:
                 group = form.cleaned_data['group']
             username = request.user
-            
             post = Post()
-            
             post.text = text
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
@@ -112,10 +108,18 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     """Редактирует пост"""
-    postobject = get_object_or_404(Post, id=post_id, author__username=request.user.username)
+    postobject = get_object_or_404(
+        Post, 
+        id=post_id, 
+        author__username=request.user.username
+        )
 
     if request.user.username != postobject.author.username:
-        return redirect('post', username=request.user.username, post_id=post_id)
+        return redirect(
+            'post', 
+            username=request.user.username, 
+            post_id=post_id
+            )
 
     if request.method == 'POST':
         form = PostForm(request.POST, instance=postobject)
