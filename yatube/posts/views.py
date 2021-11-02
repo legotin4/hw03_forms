@@ -46,7 +46,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    """Показывается профиль пользователя"""
+    """Показывает профиль пользователя"""
     userobject = User.objects.get(username=username)
     posts = Post.objects.filter(author=userobject).order_by('-pub_date')
     count = posts.count()
@@ -63,8 +63,9 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    """Показывается пост"""
-    userobject = User.objects.get(username=username)
+    """Показывает пост"""
+    
+    userobject = User.objects.get(username=request.user.username)
     postobject = Post.objects.get(id=post_id)
     count = Post.objects.filter(author=userobject).count()
     comments = Comment.objects.filter(post=postobject)
@@ -80,7 +81,7 @@ def post_view(request, username, post_id):
 
 
 def post_create(request):
-    """Создаётся новый пост"""
+    """Создаёт новый пост"""
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -88,9 +89,9 @@ def post_create(request):
             if form.cleaned_data['group']:
                 group = form.cleaned_data['group']
             username = request.user
-            files = form.cleaned_data['image']
+            
             post = Post()
-            post.image = files
+            
             post.text = text
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
@@ -108,18 +109,22 @@ def post_create(request):
 
 
 # фича с группой
+@login_required
 def post_edit(request, post_id):
-    """Редактируется пост"""
+    """Редактирует пост"""
+    postobject = get_object_or_404(Post, id=post_id, author__username=request.user.username)
 
-    postobject = Post.objects.get(id=post_id)
+    if request.user.username != postobject.author.username:
+        return redirect('post', username=username, post_id=post_id)
 
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
+        form = PostForm(request.POST, instance=postobject)
         if form.is_valid():
-            post = Post()
+            '''post = Post()
             text = form.cleaned_data['text']
             if form.cleaned_data['group']:
                 group = form.cleaned_data['group']
+                print(group)
                 objectgroup = Group.objects.filter(id=group)
                 post.group = objectgroup[0]
             username = request.user
@@ -128,9 +133,10 @@ def post_edit(request, post_id):
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
             post.pub_date = datetime.now()
-            post.save()
+            post.save()'''
+            form.save()
             return HttpResponseRedirect(
-                f'/profile/{username}',
+                f'/posts/{post_id}',
                 RequestContext(request)
             )
     else:
@@ -145,7 +151,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    """Добавляется коммент к посту"""
+    """Добавляет коммент к посту"""
     post = Post.objects.get(id=post_id)
     form = CommentForm(request.POST)
 
