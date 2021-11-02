@@ -109,18 +109,16 @@ def post_create(request):
 def post_edit(request, post_id):
     """Редактирует пост"""
     postobject = get_object_or_404(
-        Post, 
-        id=post_id, 
+        Post,
+        id=post_id,
         author__username=request.user.username
         )
-
     if request.user.username != postobject.author.username:
         return redirect(
-            'post', 
-            username=request.user.username, 
+            'post',
+            username=request.user.username,
             post_id=post_id
             )
-
     if request.method == 'POST':
         form = PostForm(request.POST, instance=postobject)
         if form.is_valid():
@@ -145,7 +143,6 @@ def post_edit(request, post_id):
             )
     else:
         form = PostForm(initial={'text': postobject.text})
-
     return render(request, 'posts/post_edit.html', {
         'form': form,
         'post_id': post_id,
