@@ -96,9 +96,8 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return HttpResponseRedirect(
-                f'/profile/{request.user.username}',
-                RequestContext(request)
+            return redirect(
+                'posts:profile', username = request.user.username
             )
     else:
         form = PostForm()
