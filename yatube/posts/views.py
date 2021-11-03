@@ -97,7 +97,7 @@ def post_create(request):
             post.author = request.user
             post.save()
             return redirect(
-                'posts:profile', 
+                'posts:profile',
                 username = request.user.username
             )
     else:
