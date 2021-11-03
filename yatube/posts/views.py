@@ -81,9 +81,9 @@ def post_view(request, username, post_id):
 def post_create(request):
     """Создаёт новый пост"""
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
+        form = PostForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data['text']
+            '''text = form.cleaned_data['text']
             if form.cleaned_data['group']:
                 group = form.cleaned_data['group']
             username = request.user
@@ -92,10 +92,12 @@ def post_create(request):
             objectuser = User.objects.filter(username=username)
             post.author = objectuser[0]
             objectgroup = Group.objects.filter(id=group)
-            post.group = objectgroup[0]
+            post.group = objectgroup[0]'''
+            post = form.save(commit=False)
+            post.author = request.user
             post.save()
             return HttpResponseRedirect(
-                f'/profile/{username}',
+                f'/profile/{request.user.username}',
                 RequestContext(request)
             )
     else:
