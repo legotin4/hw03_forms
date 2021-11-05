@@ -9,11 +9,11 @@
         <div class="card-body">
           <div class="h2">
             <!-- Имя автора -->
-            {{userobject.first_name}} {{userobject.last_name}}
+            {{post.author.first_name}} {{post.author.last_name}}
           </div>
           <div class="h3 text-muted">
             <!-- username автора -->
-            @{{userobject.username}}
+            @{{post.author.username}}
           </div>
         </div>
         <ul class="list-group list-group-flush">
@@ -26,7 +26,7 @@
           <li class="list-group-item">
             <div class="h6 text-muted">
               <!--Количество записей -->
-              Записей: {{count}}
+              Записей: {{ post.author.posts.count }}
             </div>
           </li>
         </ul>
@@ -38,9 +38,9 @@
         <div class="card-body">
           <p class="card-text">
             <!-- Ссылка на страницу автора в атрибуте href; username автора в тексте ссылки -->
-            <a href="{% url 'posts:profile' userobject.username %}">
+            <a >
               <strong class="d-block text-gray-dark">
-                @{{userobject.username}}
+                @{{post.author.username}}
               </strong>
             </a>
 
@@ -52,7 +52,7 @@
             {{ postobject.text }}
           </p>
           <div class="d-flex justify-content-between align-items-center">
-            {% if user.username == userobject.username %}
+            {% if user.username == post.author.username %}
             <div class="btn-group">
 
               <!-- Ссылка на редактирование, показывается только автору записи.

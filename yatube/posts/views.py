@@ -46,7 +46,7 @@ def group_posts(request, slug):
 
 def profile(request, username):
     """Показывает профиль пользователя"""
-    userobject = User.objects.get(username=username)
+    userobject = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=userobject).order_by('-pub_date')
     count = posts.count()
     paginator = Paginator(posts, 10)
@@ -61,18 +61,19 @@ def profile(request, username):
     })
 
 
-def post_view(request, username, post_id):
+def post_detail(request, post_id):
     """Показывает пост"""
-    userobject = User.objects.get(username=request.user.username)
-    postobject = Post.objects.get(id=post_id)
+    '''userobject = get_object_or_404(User, username = username)'''
+    '''postobject = Post.objects.get(id=post_id)'''
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all()
+    '''postobject = get_object_or_404(Post, id=post_id)
     count = Post.objects.filter(author=userobject).count()
-    comments = Comment.objects.filter(post=postobject)
+    comments = Comment.objects.filter(post=postobject)'''
     form = CommentForm()
-
+    print(post.author.username)
     return render(request, 'posts/post_detail.html', {
-        'userobject': userobject,
-        'postobject': postobject,
-        'count': count,
+        'postobject': post,
         'comments': comments,
         'form': form
     })
@@ -98,7 +99,7 @@ def post_create(request):
             post.save()
             return redirect(
                 'posts:profile',
-                username = request.user.username
+                username=request.user.username
             )
     else:
         form = PostForm()
