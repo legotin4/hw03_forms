@@ -46,34 +46,31 @@ def group_posts(request, slug):
 
 def profile(request, username):
     """Показывает профиль пользователя"""
-    userobject = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=userobject).order_by('-pub_date')
+    author = get_object_or_404(User, username=username)
+    '''posts = Post.objects.filter(author=author).order_by('-pub_date')'''
+    posts = author.posts.all()
     count = posts.count()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    post_last = Post.objects.filter(author=userobject).latest('id')
+    post_last = Post.objects.filter(author=author).latest('id')
     return render(request, 'posts/profile.html', {
         'page_obj': page_obj,
         'count': count,
-        'userobject': userobject,
+        'author': author,
         'post_last': post_last
     })
 
 
 def post_detail(request, post_id):
     """Показывает пост"""
-    '''userobject = get_object_or_404(User, username = username)'''
-    '''postobject = Post.objects.get(id=post_id)'''
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
-    '''postobject = get_object_or_404(Post, id=post_id)
-    count = Post.objects.filter(author=userobject).count()
-    comments = Comment.objects.filter(post=postobject)'''
+    
     form = CommentForm()
     print(post.author.username)
     return render(request, 'posts/post_detail.html', {
-        'postobject': post,
+        'post': post,
         'comments': comments,
         'form': form
     })
@@ -84,16 +81,6 @@ def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            '''text = form.cleaned_data['text']
-            if form.cleaned_data['group']:
-                group = form.cleaned_data['group']
-            username = request.user
-            post = Post()
-            post.text = text
-            objectuser = User.objects.filter(username=username)
-            post.author = objectuser[0]
-            objectgroup = Group.objects.filter(id=group)
-            post.group = objectgroup[0]'''
             post = form.save(commit=False)
             post.author = request.user
             post.save()
@@ -125,20 +112,6 @@ def post_edit(request, post_id):
     if request.method == 'POST':
         form = PostForm(request.POST, instance=postobject)
         if form.is_valid():
-            '''post = Post()
-            text = form.cleaned_data['text']
-            if form.cleaned_data['group']:
-                group = form.cleaned_data['group']
-                print(group)
-                objectgroup = Group.objects.filter(id=group)
-                post.group = objectgroup[0]
-            username = request.user
-            post.id = post_id
-            post.text = text
-            objectuser = User.objects.filter(username=username)
-            post.author = objectuser[0]
-            post.pub_date = datetime.now()
-            post.save()'''
             form.save()
             return HttpResponseRedirect(
                 f'/posts/{post_id}',
