@@ -47,18 +47,17 @@ def group_posts(request, slug):
 def profile(request, username):
     """Показывает профиль пользователя"""
     author = get_object_or_404(User, username=username)
-    '''posts = Post.objects.filter(author=author).order_by('-pub_date')'''
-    posts = author.posts.all()
+    posts = Post.objects.filter(author=author).order_by('-pub_date')
+    #posts = author.posts.all()
     count = posts.count()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    post_last = Post.objects.filter(author=author).latest('id')
+    '''post_last = Post.objects.filter(author=author).latest('id')'''
     return render(request, 'posts/profile.html', {
         'page_obj': page_obj,
         'count': count,
-        'author': author,
-        'post_last': post_last
+        'author': author
     })
 
 
