@@ -48,7 +48,6 @@ def profile(request, username):
     """Показывает профиль пользователя"""
     author = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=author).order_by('-pub_date')
-    #posts = author.posts.all()
     count = posts.count()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -65,7 +64,6 @@ def post_detail(request, post_id):
     """Показывает пост"""
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
-    
     form = CommentForm()
     print(post.author.username)
     return render(request, 'posts/post_detail.html', {
