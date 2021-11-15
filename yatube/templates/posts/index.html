@@ -1,28 +1,18 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Последние обновления | Yatube</title>
-    </head>
-    <body>
-        {% extends "base.html" %}
-            {% block title %}Последние обновления на сайте{% endblock %}
-            {% block header %}Последние обновления на сайте{% endblock %}
-            {% block content %}
+{% extends "base.html" %}
+{% block title %}Последние обновления на сайте{% endblock %}
+{% block header %}Последние обновления на сайте{% endblock %}
+{% block content %}
 
-                {% for post in page_obj %}
-                <h3>
-                    Автор: <a href="{% url 'posts:profile' username=post.author.username %}"> {{ post.author.get_full_name }} </a>, Дата публикации: {{ post.pub_date|date:"d M Y" }}
-                </h3>
-                <p>{{ post.text|linebreaksbr }}</p>
-                {% if post.group %}
-                <p>{{ post.group }} <a href="{% url 'posts:group_list' slug=post.group.slug %}">все записи группы</a></p>
-                {% endif %}
-                {% if not forloop.last %}<hr>{% endif %}
-                {% endfor %}
+    {% for post in page_obj %}
+        <h3>
+            Автор: <a href="{% url 'posts:profile' username=post.author.username %}"> {{ post.author.get_full_name }} </a>, Дата публикации: {{ post.pub_date|date:"d M Y" }}
+        </h3>
+        <p>{{ post.text|linebreaksbr }}</p>
+        {% if post.group %}
+        <p><a href="{% url 'posts:group_list' slug=post.group.slug %}">{{ post.group }}</a></p>
+        {% endif %}
+        {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
 
-                {% include "paginator.html" with page=page_obj %}
-            {% endblock %}
-    </body>
-</html>
+    {% include "paginator.html" with page=page_obj %}
+{% endblock %}

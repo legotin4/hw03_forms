@@ -13,7 +13,7 @@
           </div>
           <div class="h3 text-muted">
             <!-- username автора -->
-            @{{author.username}}
+            <a href="{% url 'posts:profile' author.username %}">@{{author.username}}</a>
           </div>
         </div>
         <ul class="list-group list-group-flush">
@@ -26,7 +26,7 @@
           <li class="list-group-item">
             <div class="h6 text-muted">
               <!-- Количество записей -->
-              Записей: {{count}}
+              Записей: {{ author.posts.count }}
             </div>
           </li>
         </ul>
@@ -34,47 +34,16 @@
     </div>
 
     <div class="col-md-9">
-      <!-- Начало блока с отдельным постом 
-      <div class="card mb-3 mt-1 shadow-sm">
-        <div class="card-body">
-          <p class="card-text">
-            
-            <a href="/{{userobject.username}}/">
-              <strong class="d-block text-gray-dark">@{{author.username}}</strong>
-            </a>
-            Текст поста
-            {{post_last.text}}
-          </p>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="btn-group ">
-               
-              <a class="btn btn-sm text-muted" href="/leo/37/" role="button">
-                Добавить комментарий
-              </a>
-              
-              {% if user.username == author.username %}
-              <a class="btn btn-sm text-muted" href="{% url 'posts:post_edit' post_id=post_last.id %}" role="button">
-                Редактировать
-              </a>
-              {% endif %}
-            </div>
-            
-            <small class="text-muted">{{post_last.pub_date|date:"d M Y" }}</small>
-          </div>
-        </div>
-      </div>
-       Конец блока с отдельным постом -->
-      <!-- Остальные посты -->
-      {% for p in page_obj %}
+      {% for page in page_obj %}
                 <h3>
-                    Автор: {{ p.author.get_full_name }}, Дата публикации: {{ p.pub_date|date:"d M Y" }} 
+                    Автор: {{ page.author.get_full_name }}, Дата публикации: {{ page.pub_date|date:"d M Y" }} 
                 </h3>
-                <p>{{ p.text|linebreaksbr }}</p>
-                <small class="text-muted"><a href="{% url 'posts:post_detail' post_id=p.id %}">Перейти в пост</a></small>
+                <p>{{ page.text|linebreaksbr }}</p>
+                <small class="text-muted"><a href="{% url 'posts:post_detail' post_id=page.id %}">Перейти в пост</a></small>
                 
-                {% if p.group %}
+                {% if page.group %}
 
-                <p>{{ p.group }} <a href="{% url 'posts:group_list' slug=p.group.slug %}">все записи группы</a></p>
+                <p><a href="{% url 'posts:group_list' slug=page.group.slug %}">{{ page.group }}</a></p>
                 {% endif %}
 
                 {% if not forloop.last %}<hr>{% endif %}
