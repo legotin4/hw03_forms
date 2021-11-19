@@ -52,21 +52,21 @@
                 {{ post.text|linebreaks }}
               </p>
               <div class="d-flex justify-content-between align-items-center">
-                {% if user.username == post.author.username %}
-                <div class="btn-group">
+                {% if user == post.author %}
+                  <div class="btn-group">
 
-                  <!-- Ссылка на редактирование, показывается только автору записи.
-                  Эту ссылку вы подключите в финальном задании спринта -->
-                  <a class="btn btn-sm text-muted" href="{% url 'posts:post_edit' post_id=post.id  %}" role="button">
-                    Редактировать
-                  </a>
-                  <!--<a class="btn btn-sm text-muted" href="/{{userobject.username}}/{{postobject.id}}/edit " role="button">
-                    Редактировать
-                  </a>-->
-                </div>
+                    <!-- Ссылка на редактирование, показывается только автору записи.
+                    Эту ссылку вы подключите в финальном задании спринта -->
+                    <a class="btn btn-sm text-muted" href="{% url 'posts:post_edit' post_id=post.id  %}" role="button">
+                      Редактировать
+                    </a>
+                  </div>
                 {% endif %}
                 <!-- Дата публикации  -->
-                <small class="text-muted">{{postobject.pub_date|date:"d M Y" }}</small>
+                <small class="text-muted">{{post.pub_date|date:"d M Y" }}</small>
+                {% if post.group %}
+                  <p><a href="{% url 'posts:group_list' slug=post.group.slug %}">{{ post.group }}</a></p>
+                {% endif %}
               </div>
             </div>
 

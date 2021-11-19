@@ -1,6 +1,3 @@
-
-
-
 <header>
   <nav class="navbar navbar-light" style="background-color: lightskyblue">
     <div class="container">
@@ -14,8 +11,9 @@
       Меню - список пунктов со стандартными классами Bootsrap.
       Класс nav-pills нужен для выделения активных пунктов 
       {% endcomment %}
+      <ul class="nav nav-pills">
       {% with request.resolver_match.view_name as view_name %}  
-        <ul class="nav nav-pills">
+        
           <li class="nav-item"> 
             <a class="nav-link {% if view_name  == 'about:author' %}active{% endif %}" href="{% url 'about:author' %}">Об авторе</a>
           </li>
@@ -23,7 +21,7 @@
             <a class="nav-link {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'about:tech' %}">Технологии</a>
           </li>
       {% endwith %} 
-        {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
           <li class="nav-item"> 
             <a class="nav-link" href="{% url 'posts:post_create' %}">Новая запись</a>
           </li>

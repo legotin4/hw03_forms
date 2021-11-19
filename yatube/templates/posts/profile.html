@@ -34,22 +34,23 @@
     </div>
 
     <div class="col-md-9">
-      {% for page in page_obj %}
-                <h3>
-                    Автор: {{ page.author.get_full_name }}, Дата публикации: {{ page.pub_date|date:"d M Y" }} 
-                </h3>
-                <p>{{ page.text|linebreaksbr }}</p>
-                <small class="text-muted"><a href="{% url 'posts:post_detail' post_id=page.id %}">Перейти в пост</a></small>
-                
-                {% if page.group %}
+      {% for post in page_obj %}
+        <h3>
+            Автор: {{ post.author.get_full_name }}, Дата публикации: {{ post.pub_date|date:"d M Y" }} 
+        </h3>
+        <p>{{ post.text|linebreaksbr }}</p>
+        <small class="text-muted">
+          <a href="{% url 'posts:post_detail' post_id=post.id %}">Перейти в пост</a>
+        </small>
+        
+        {% if post.group %}
+          <p><a href="{% url 'posts:group_list' slug=post.group.slug %}">{{ post.group }}</a></p>
+        {% endif %}
 
-                <p><a href="{% url 'posts:group_list' slug=page.group.slug %}">{{ page.group }}</a></p>
-                {% endif %}
+        {% if not forloop.last %}<hr>{% endif %}
+      {% endfor %}
 
-                {% if not forloop.last %}<hr>{% endif %}
-                {% endfor %}
-
-                {% include "paginator.html" with page=page_obj %}
+        {% include "paginator.html" with page=page_obj %}
       <!-- Здесь постраничная навигация паджинатора -->
     </div>
   </div>
