@@ -2,57 +2,57 @@
 {% block title %}Профайл пользователя {{author.username}}{% endblock %}
 {% block content %}
 
-<main role="main" class="container">
-  <div class="row">
-    <div class="col-md-3 mb-3 mt-1">
-      <div class="card">
-        <div class="card-body">
-          <div class="h2">
-            <!-- Имя автора -->
-            {{author.first_name}}{{author.last_name}}
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-3 mb-3 mt-1">
+        <div class="card">
+          <div class="card-body">
+            <div class="h2">
+              <!-- Имя автора -->
+              {{author.first_name}}{{author.last_name}}
+            </div>
+            <div class="h3 text-muted">
+              <!-- username автора -->
+              <a href="{% url 'posts:profile' author.username %}">@{{author.username}}</a>
+            </div>
           </div>
-          <div class="h3 text-muted">
-            <!-- username автора -->
-            <a href="{% url 'posts:profile' author.username %}">@{{author.username}}</a>
-          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="h6 text-muted">
+                Подписчиков: XXX <br>
+                Подписан: XXX
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="h6 text-muted">
+                <!-- Количество записей -->
+                Записей: {{ author.posts.count }}
+              </div>
+            </li>
+          </ul>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <div class="h6 text-muted">
-              Подписчиков: XXX <br>
-              Подписан: XXX
-            </div>
-          </li>
-          <li class="list-group-item">
-            <div class="h6 text-muted">
-              <!-- Количество записей -->
-              Записей: {{ author.posts.count }}
-            </div>
-          </li>
-        </ul>
       </div>
-    </div>
 
-    <div class="col-md-9">
-      {% for post in page_obj %}
-        <h3>
-            Автор: {{ post.author.get_full_name }}, Дата публикации: {{ post.pub_date|date:"d M Y" }} 
-        </h3>
-        <p>{{ post.text|linebreaksbr }}</p>
-        <small class="text-muted">
-          <a href="{% url 'posts:post_detail' post_id=post.id %}">Перейти в пост</a>
-        </small>
-        
-        {% if post.group %}
-          <p><a href="{% url 'posts:group_list' slug=post.group.slug %}">{{ post.group }}</a></p>
-        {% endif %}
+      <div class="col-md-9">
+        {% for post in page_obj %}
+          <h3>
+              Автор: {{ post.author.get_full_name }}, Дата публикации: {{ post.pub_date|date:"d M Y" }} 
+          </h3>
+          <p>{{ post.text|linebreaksbr }}</p>
+          <small class="text-muted">
+            <a href="{% url 'posts:post_detail' post_id=post.id %}">Перейти в пост</a>
+          </small>
+          
+          {% if post.group %}
+            <p><a href="{% url 'posts:group_list' slug=post.group.slug %}">{{ post.group }}</a></p>
+          {% endif %}
 
-        {% if not forloop.last %}<hr>{% endif %}
-      {% endfor %}
+          {% if not forloop.last %}<hr>{% endif %}
+        {% endfor %}
 
         {% include "paginator.html" with page=page_obj %}
-      <!-- Здесь постраничная навигация паджинатора -->
+        <!-- Здесь постраничная навигация паджинатора -->
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 {% endblock %}

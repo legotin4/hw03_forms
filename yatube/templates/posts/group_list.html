@@ -3,17 +3,17 @@
 {% block header %}<h1>{{group.title}}</h1>{% endblock %}
 {% block content %}
 <p>{{group.description|linebreaksbr}}</p>
-    {% for post in page_obj %}
-		<p>
-			<ul>
-				<li>Автор: <a href="{% url 'posts:profile' post.author.username|stringformat:'s' %}">{{post.author}}</a></li>
-				<li>Дата публикации: {{post.pub_date|date:"d M Y" }}</li>
-			</ul>
-			<br>
-			{{post.text|linebreaksbr}}
+  {% for post in page_obj %}
+    <p>
+        <ul>
+          <li>Автор: <a href="{% url 'posts:profile' post.author.username %}">{{post.author.get_full_name}}</a></li>
+          <li>Дата публикации: {{post.pub_date|date:"d M Y" }}</li>
+        </ul>
+        <br>
+        {{post.text|linebreaksbr}}
 			
-		</p>
-		<hr>
-	{%endfor%}
-	{% include "paginator.html" with page=page_obj %}
+    </p>
+	<hr>
+  {%endfor%}
+  {% include "paginator.html" with page=page_obj %}
 {% endblock %}
